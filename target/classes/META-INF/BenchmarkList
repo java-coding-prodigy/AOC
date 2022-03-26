@@ -1,0 +1,3 @@
+JMH S 25 AOC2021Practice.Problem23 S 53 AOC2021Practice.jmh_generated.Problem23_part2_jmhTest S 5 part2 S 11 AverageTime E A 1 1 1 E E E E E E E I 1 2 E E L 2 6 -Xms2G 6 -Xmx2G E E E U 12 MILLISECONDS E E 
+JMH S 22 shhj.CollectorsCompare S 50 shhj.jmh_generated.CollectorsCompare_array_jmhTest S 5 array S 11 AverageTime E A 1 1 1 E E E E E E E I 1 2 E E L 2 6 -Xms2G 6 -Xmx2G E E E U 12 MILLISECONDS E E 
+JMH S 22 shhj.CollectorsCompare S 49 shhj.jmh_generated.CollectorsCompare_list_jmhTest S 4 list S 11 AverageTime E A 1 1 1 E E E E E E E I 1 2 E E L 2 6 -Xms2G 6 -Xmx2G E E E U 12 MILLISECONDS E E 
