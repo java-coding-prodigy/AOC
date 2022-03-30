@@ -11,7 +11,7 @@ class Day18 : Day(18) {
 
     private fun getResourceValue(input: List<String>, minutes: Long): Int {
         var acres = parse(input)
-        val indexedHashes: MutableList<String> = mutableListOf(/*acres.hash*/)
+        val indexedHashes = mutableListOf<String>()
 
         do {
             acres = acres.nextState()
@@ -24,8 +24,7 @@ class Day18 : Day(18) {
         if (minutes > indexedHashes.size) {
 
             var i = indexedHashes.indexOf(acres.hash)
-            println(i)
-            val period = indexedHashes.size - i /*- 1*/
+            val period = indexedHashes.size - i
             while ((i + 1) % period < (minutes % period).toInt())
                 i += 1
             acres = parse(indexedHashes[i].split('\n'))
