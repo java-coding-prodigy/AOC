@@ -11,7 +11,7 @@ abstract class Day(number: Int) {
 
     init {
         inputPath =
-            Path("C:\\Users\\Abc\\IdeaProjects\\AOC2021\\src\\main\\resources\\2018\\Day$number.txt")
+            Path("C:\\Users\\Abc\\IdeaProjects\\AOC\\src\\main\\resources\\2018\\Day$number.txt")
         input = inputPath.readLines()
     }
 
