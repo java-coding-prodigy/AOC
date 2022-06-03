@@ -11,7 +11,7 @@ fun main(input: Array<String>){
 
 abstract class Day(private val number: Int) {
 
-    private val inputPath : File = File("src/main/resources/Day$number.txt")
+    private val inputPath : File = File("src/main/resources/2021/Day$number.txt")
     private val input = inputPath.readLines()
 
 

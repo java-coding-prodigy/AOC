@@ -3,7 +3,7 @@ package aoc2019;
 
 import kotlin.Pair;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 import java.util.Queue;
 import java.util.*;

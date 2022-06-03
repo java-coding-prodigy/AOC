@@ -16,7 +16,7 @@ class Day18 : Day(18) {
         do {
             acres = acres.nextState()
         } while (!indexedHashes.contains(acres.hash) && indexedHashes.add(acres.hash) && indexedHashes.size < minutes)
-        
+
         if (minutes > indexedHashes.size) {
 
             var i = indexedHashes.indexOf(acres.hash)
