@@ -15,6 +15,10 @@ public enum Direction {
         this.value = value;
     }
 
+    public static Stream<Point> neighbours(Point p) {
+        return Arrays.stream(values()).map(dir -> dir.move(p));
+    }
+
     public Point move(Point other) {
         return switch (this) {
             case NORTH -> new Point(other.x, other.y + 1);
@@ -22,10 +26,6 @@ public enum Direction {
             case EAST -> new Point(other.x + 1, other.y);
             case WEST -> new Point(other.x - 1, other.y);
         };
-    }
-
-    public static Stream<Point> neighbours(Point p){
-        return Arrays.stream(values()).map(dir -> dir.move(p));
     }
 
     public Point backtrack(Point other) {
@@ -39,6 +39,15 @@ public enum Direction {
 
     int reverse() {
         return ((value - 1) ^ 1) + 1;
+    }
+
+    public Direction opposite() {
+        return switch (this) {
+            case NORTH -> SOUTH;
+            case EAST -> WEST;
+            case SOUTH -> NORTH;
+            case WEST -> EAST;
+        };
     }
 
 }

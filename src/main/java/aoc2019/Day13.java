@@ -31,7 +31,8 @@ public class Day13 {
 
             bool = comp.runTill3();
 
-            while ((output = comp.getOutput()) != null) {
+            while ((output = Arrays.stream(comp.getOutput()).mapToInt(Math::toIntExact).toArray())
+                    != null) {
 
                 int x = output[0];
                 int y = output[1];

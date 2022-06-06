@@ -33,7 +33,7 @@ public class Day4 {
         return bool;
     }
 
-    private static boolean check2(int num) {
+   private static boolean check2(int num) {
         String string = String.valueOf(num);
         if (string.length() != 6) {
             return false;

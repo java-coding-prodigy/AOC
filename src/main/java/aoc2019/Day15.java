@@ -2,7 +2,7 @@ package aoc2019;
 
 import org.apache.commons.math3.util.Pair;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Queue;
 import java.util.*;
 import java.util.stream.Stream;

@@ -10,13 +10,16 @@ import java.util.function.*;
 
 public class IntCode {
 
-    public final Queue<Integer> inputs = new LinkedList<>();
+    public final Queue<Long> inputs = new ArrayDeque<>();
     final AtomicLong output;
     final AtomicInteger relativeBase;
     final int setting;
-    private final Queue<int[]> outputs = new LinkedList<>();
+    final Deque<long[]> outputs = new ArrayDeque<>();
     long[] memory;
     long i;
+    private int outI = 0;
+    private Map<Integer, LongOp> ops;
+    private long[] currOut = new long[3];
 
     public IntCode(int setting, int[] array) {
         this(setting, Arrays.stream(array).asLongStream().toArray());
@@ -28,7 +31,7 @@ public class IntCode {
         this.output = new AtomicLong(prev.output.get());
         this.relativeBase = new AtomicInteger(prev.relativeBase.get());
         this.inputs.addAll(prev.inputs);
-        line.chars().forEach(inputs::add);
+        line.chars().mapToLong(Long::valueOf).forEach(inputs::add);
         this.setting = prev.setting;
     }
 
@@ -42,6 +45,7 @@ public class IntCode {
         this.output = new AtomicLong();
         this.i = 0;
         this.relativeBase = new AtomicInteger();
+        ops = longOps(() -> inputs.isEmpty() ? -1 : inputs.poll(), this::addOutput, relativeBase);
     }
 
     public static Map<Integer, Operation> operations(Integer[] inputs, IntConsumer onOutput) {
@@ -92,12 +96,19 @@ public class IntCode {
 
     private static Map<Integer, LongOp> longOps(Supplier<Integer> inputs, LongConsumer onOutput,
             AtomicInteger relativeBase) {
+        return longOps(() -> (long) inputs.get(), onOutput, relativeBase);
+
+    }
+
+    private static Map<Integer, LongOp> longOps(LongSupplier inputs, LongConsumer onOutput,
+            AtomicInteger relativeBase) {
         return Map.of(1, new LongOp(3,
                         (long[] params, long[] array) -> array[(int) params[3]] = params[1] + params[2],
                         true), 2, new LongOp(3,
                         (long[] params, long[] array) -> array[(int) params[3]] = params[1] * params[2],
                         true), 3, new LongOp(1,
-                        (long[] params, long[] array) -> array[(int) params[1]] = inputs.get(), true), 4,
+                        (long[] params, long[] array) -> array[(int) params[1]] = inputs.getAsLong(), true),
+                4,
                 new LongOp(1, (long[] params, long[] array) -> onOutput.accept(params[1]), false),
                 5, new LongOp(2,
                         (params, array) -> params[1] != 0 ? (int) params[2] : (int) params[0] + 3,
@@ -112,7 +123,6 @@ public class IntCode {
                     relativeBase.addAndGet((int) params[1]);
                 }, false), 99, new LongOp(0, (long[] params, long[] array) -> -1, false));
     }
-
 
     public static Pair<long[], Integer> run(long[] previous, int dir) {
         AtomicInteger relativeBase = new AtomicInteger();
@@ -188,12 +198,31 @@ public class IntCode {
         return run(memory, List.of(input).iterator());
     }
 
+    private void addOutput(long output) {
+        currOut[outI++] = output;
+        if (outI == 3) {
+            outputs.add(currOut);
+            currOut = new long[3];
+            outI = 0;
+        }
+    }
 
-    public CharSequence runTillInput(String command) {
-        command.chars().forEach(inputs::add);
+    public void runOnce() {
+        Ans res = ops.get((int) memory[(int) i] % 100).apply(memory, (int) i, relativeBase.get());
+        if (res.success) {
+            i = res.idx;
+        } else {
+            memory = Arrays.copyOf(memory, res.idx + 1);
+            runOnce();
+        }
+
+    }
+
+    public String runTillInput(String command) {
+        command.chars().mapToLong(Long::valueOf).forEach(inputs::add);
         StringBuilder sb = new StringBuilder();
         Map<Integer, LongOp> ops = longOps(inputs::poll, ch -> sb.append((char) ch), relativeBase);
-        while (memory[(int) i] % 100 != 99) {
+        while (isRunning()) {
             try {
                 Ans res = ops.get((int) memory[(int) i] % 100)
                         .apply(memory, (int) i, relativeBase.get());
@@ -203,23 +232,23 @@ public class IntCode {
                     memory = Arrays.copyOf(memory, res.idx + 1);
                 }
             } catch (NullPointerException e) {
-                return sb;
+                return sb.toString();
             }
         }
-
-        return sb;
+        return sb.toString();
     }
 
-    public void addInput(int input) {
+    public boolean isRunning() {
+        return memory[(int) i] % 100 != 99;
+    }
+
+    public void addInput(long input) {
         inputs.add(input);
     }
 
     public boolean runTill3() {
-        int[] outputs = new int[3];
-        AtomicInteger outputIdx = new AtomicInteger();
-        Map<Integer, LongOp> ops = longOps(inputs::poll,
-                (output -> outputs[outputIdx.getAndIncrement()] = (int) output), relativeBase);
-        while (memory[(int) i] % 100 != 99) {
+        Map<Integer, LongOp> ops = longOps(() -> inputs.remove(), this::addOutput, relativeBase);
+        while (isRunning()) {
 
             try {
                 Ans res = ops.get((int) memory[(int) i] % 100)
@@ -229,33 +258,24 @@ public class IntCode {
                 } else {
                     memory = Arrays.copyOf(memory, res.idx + 1);
                 }
-            } catch (NullPointerException e) {
-                // if (outputIdx.get() == 3) {
-                //System.out.println(outputIdx);
+            } catch (NoSuchElementException e) {
                 return true;
-                // }
-                //addInput(-1);
             }
-            if (outputIdx.get() == 3) {
-                this.outputs.add(Arrays.copyOf(outputs, 3));
-                outputIdx.set(0);
-            }
-
         }
         return false;
     }
 
-    public int[] getOutput() {
+    public long[] getOutput() {
         return outputs.poll();
     }
 
+    public boolean canSendPackage() {
+        return !outputs.isEmpty();
+    }
+
     public int[] runTill3Output() {
-        int[] outputs = new int[3];
-        AtomicInteger outputIdx = new AtomicInteger();
-        Map<Integer, LongOp> ops =
-                longOps(() -> -1, (output -> outputs[outputIdx.getAndIncrement()] = (int) output),
-                        relativeBase);
-        while (memory[(int) i] % 100 != 99 && outputIdx.get() < 3) {
+        Map<Integer, LongOp> ops = longOps(() -> -1, this::addOutput, relativeBase);
+        while (isRunning() && outI < 3) {
 
             Ans res =
                     ops.get((int) memory[(int) i] % 100).apply(memory, (int) i, relativeBase.get());
@@ -265,16 +285,13 @@ public class IntCode {
                 memory = Arrays.copyOf(memory, res.idx + 1);
             }
         }
-        if (outputIdx.get() < 3) {
-            return null;
-        }
-        return outputs;
+        return Arrays.stream(getOutput()).mapToInt(Math::toIntExact).toArray();
     }
 
 
     public long runTillEnd() {
         Map<Integer, LongOp> ops = longOps(inputs::poll, output::set, relativeBase);
-        while (memory[(int) i] % 100 != 99) {
+        while (isRunning()) {
             Ans res =
                     ops.get((int) memory[(int) i] % 100).apply(memory, (int) i, relativeBase.get());
             if (res.success) {
@@ -291,7 +308,7 @@ public class IntCode {
         List<Integer> outputs = new ArrayList<>(2);
         output.set(-1);
         Map<Integer, LongOp> ops = longOps(input, output, relativeBase);
-        while (memory[(int) i] % 100 != 99 && outputs.size() < 2) {
+        while (isRunning() && outputs.size() < 2) {
             Ans res =
                     ops.get((int) memory[(int) i] % 100).apply(memory, (int) i, relativeBase.get());
             if (res.success) {
@@ -320,7 +337,7 @@ public class IntCode {
         }
         list.add(input);
         Map<Integer, LongOp> operations = longOps(list.iterator(), output, relativeBase);
-        while (memory[(int) i] % 100 != 99 && output.get() == -1) {
+        while (isRunning() && output.get() == -1) {
             i = operations.get((int) memory[(int) i] % 100)
                     .apply(memory, (int) i, relativeBase.get()).idx;
 

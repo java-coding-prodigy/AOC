@@ -75,10 +75,8 @@ open class Day14 : Day(14) {
                         (k, v) -> map[k] = (if(map[k] == null) BigInteger.ZERO else map[k]!!) + v }
                 newChars.forEach{
                         (k, v) ->
-                    map2[k] = (if(map2[k] == null) BigInteger.ZERO else map2[k]!!) + v
+                   map2[k] = (if(map2[k] == null) BigInteger.ZERO else map2[k]!!) + v
                 }
-                //newChars.clear()
-                println(map)
             }
             return map2
         }
