@@ -1,6 +1,6 @@
 package shhj;
 
-import AOC2021Practice.Problem23;
+import aoc2020.Problem23;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;

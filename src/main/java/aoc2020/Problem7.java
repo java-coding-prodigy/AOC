@@ -1,4 +1,4 @@
-package AOC2021Practice;
+package aoc2020;
 
 
 import java.io.IOException;
@@ -14,7 +14,6 @@ public class Problem7 implements AoC2020Puzzle {
         String rule = "muted tomato bags contain no bags.";
         String[] split = rule.split(" bags contain ");
         System.out.println(Arrays.toString(split));
-        String colorName = split[0];
         System.out.println(Arrays.toString(split[1].split("bags?,?[\\s.]?")));
         Set<String> colorsContained = Arrays.stream(split[1].split("bags?,?[\\s.?]"))
                 .filter(str -> !str.equals("no"))
@@ -83,7 +82,40 @@ public class Problem7 implements AoC2020Puzzle {
     }
 
 
-    private record BagContained(int number, String color) {
-    }
+    private static final class BagContained {
+        private final int number;
+        private final String color;
+
+        private BagContained(int number, String color) {
+            this.number = number;
+            this.color = color;
+        }
+
+        public int number() {
+            return number;
+        }
+
+        public String color() {
+            return color;
+        }
+
+        @Override public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
+            var that = (BagContained) obj;
+            return this.number == that.number && Objects.equals(this.color, that.color);
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(number, color);
+        }
+
+        @Override public String toString() {
+            return "BagContained[" + "number=" + number + ", " + "color=" + color + ']';
+        }
+
+        }
 
 }

@@ -113,11 +113,41 @@ public class Day12 {
     }
 
 
-    private record Data(int pos, int vel) {
-        @Override public String toString() {
-            return pos + "_" + vel;
+    private static final class Data {
+        private final int pos;
+        private final int vel;
+
+        private Data(int pos, int vel) {
+            this.pos = pos;
+            this.vel = vel;
         }
-    }
+
+        @Override public String toString() {
+                return pos + "_" + vel;
+            }
+
+        public int pos() {
+            return pos;
+        }
+
+        public int vel() {
+            return vel;
+        }
+
+        @Override public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
+            var that = (Data) obj;
+            return this.pos == that.pos && this.vel == that.vel;
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(pos, vel);
+        }
+    
+        }
 
 
 
@@ -148,18 +178,6 @@ public class Day12 {
         int energy() {
             return (Math.abs(x) + Math.abs(y) + Math.abs(z)) * (Math.abs(xV) + Math.abs(yV)
                     + Math.abs(zV));
-        }
-
-        public int x() {
-            return x;
-        }
-
-        public int y() {
-            return y;
-        }
-
-        public int z() {
-            return z;
         }
 
         @Override public boolean equals(Object obj) {

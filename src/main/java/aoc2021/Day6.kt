@@ -16,7 +16,7 @@ class Day6 : Day(6) {
         constructor(fish: Fish) : this(if (fish.timer == 0) 6 else fish.timer - 1)
     }
 
-    class Day(val fishes: Collection<Fish>) {
+    private class Day(val fishes: Collection<Fish>) {
         fun nextDay(): Day {
             val fishes: MutableSet<Fish> = HashSet()
             for (fish in this.fishes) {
@@ -32,15 +32,15 @@ class Day6 : Day(6) {
         constructor(initialState: Iterable<Int>) : this(initialState.groupBy { it }.mapValues{it.value.size.toLong()})
         fun nextDay() : BetterDay{
             val map : MutableMap<Int, Long> = HashMap()
-            map[0] = if(this.map[1] == null) 0 else this.map[1]!!
-            map[1] = if(this.map[2] == null) 0 else this.map[2]!!
-            map[2] = if(this.map[3] == null) 0 else this.map[3]!!
-            map[3] = if(this.map[4] == null) 0 else this.map[4]!!
-            map[4] = if(this.map[5] == null) 0 else this.map[5]!!
-            map[5] = if(this.map[6] == null) 0 else this.map[6]!!
-            map[6] = if(this.map[7] == null) 0 else this.map[7]!! + if(this.map[0] == null) 0 else this.map[0]!!
-            map[7] = if(this.map[8] == null) 0 else this.map[8]!!
-            map[8] = if(this.map[0] == null) 0 else this.map[0]!!
+            map[0] = map[0] ?: 0
+            map[1] = map[1] ?: 0
+            map[2] = map[2] ?: 0
+            map[3] = map[3] ?: 0
+            map[4] = map[4] ?: 0
+            map[5] = map[5] ?: 0
+            map[6] = (map[6] ?: 0 ) + (map[0] ?: 0)
+            map[7] = map[7] ?: 0
+            map[8] = map[8] ?: 0
 
             return BetterDay(map)
         }
