@@ -11,9 +11,12 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="GreclipseSettings">
+    <option name="greclipsePath" value="$MAVEN_REPOSITORY$/org/codehaus/groovy/groovy-eclipse-batch/3.0.8-01/groovy-eclipse-batch-3.0.8-01.jar" />
+  </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="AOC" options="--add-modules java.base,java.datatransfer" />
+      <module name="AOC" options="" />
       <module name="AOC2021" options="--add-modules java.base" />
     </option>
   </component>
