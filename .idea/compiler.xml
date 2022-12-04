@@ -16,10 +16,6 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="AOC" options="" />
-<<<<<<< HEAD
-      <module name="AOC2021" options="--add-modules java.base" />
-=======
->>>>>>> b71aec57a2593973d9835d3558145f9d991e1d9e
     </option>
   </component>
 </project>
