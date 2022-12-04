@@ -1,4 +1,4 @@
-package AOC2021Practice;
+package aoc2020;
 
 import java.io.IOException;
 import java.nio.file.Files;

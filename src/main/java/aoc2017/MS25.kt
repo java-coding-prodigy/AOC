@@ -24,7 +24,11 @@ class MS25 : MS(25) {
             val moveTo1 = input[i + 8].let { it[it.length - 2] }
             states[name] = State(name,
                 { if (it) write1 else write0 },
+<<<<<<< HEAD
                 { idx, b -> if (if (b) move1 else move0) idx.inc() else idx.dec() },
+=======
+                { x, b -> if (if (b) move1 else move0) x.inc() else x.dec() },
+>>>>>>> b71aec57a2593973d9835d3558145f9d991e1d9e
                 { if (it) moveTo1 else moveTo0 })
         }
         var state = states[input[0].let { it[it.length - 2] }]!!

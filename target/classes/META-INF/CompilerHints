@@ -3,8 +3,8 @@ dontinline,*.*_avgt_jmhStub
 dontinline,*.*_sample_jmhStub
 dontinline,*.*_ss_jmhStub
 dontinline,*.*_thrpt_jmhStub
-inline,AOC2021Practice/Problem23.part2
-inline,AOC2021Practice/Problem23.setup
+inline,aoc2020/Problem23.part2
+inline,aoc2020/Problem23.setup
 inline,shhj/CollectorsCompare.array
 inline,shhj/CollectorsCompare.list
 inline,shhj/CollectorsCompare.setup

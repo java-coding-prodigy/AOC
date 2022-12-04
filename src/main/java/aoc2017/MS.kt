@@ -11,7 +11,7 @@ abstract class MS(number: Int) {
 
     init {
         inputPath =
-            Path("C:\\Users\\Abc\\IdeaProjects\\AOC\\src\\main\\resources\\2017\\MS$number.txt")
+            Path("src/main/resources/2017/MS$number.txt")
         input = inputPath.readLines()
     }
 

@@ -350,70 +350,185 @@ public class IntCode {
     }
 
 
-    private record LongOp(int params, ToIntBiFunction<long[], long[]> op, boolean write) {
+    private static final class LongOp {
+        private final int params;
+        private final ToIntBiFunction<long[], long[]> op;
+        private final boolean write;
 
-        LongOp(int params, BiConsumer<long[], long[]> op, boolean write) {
-            this(params, (p, arr) -> {
-                op.accept(p, arr);
-                return (int) p[0] + params + 1;
-            }, write);
+        private LongOp(int params, ToIntBiFunction<long[], long[]> op, boolean write) {
+            this.params = params;
+            this.op = op;
+            this.write = write;
         }
-
-        Ans apply(long[] memory, int i, int relativeBase) {
-            long[] params = new long[this.params + 1];
-            params[0] = i;
-            int code = (int) memory[i] / 100;
-            for (int idx = 1; idx <= this.params; idx++) {
-                int mode = code % 10;
-                long curr = memory[i + idx];
-                if (mode == 2) {
-                    curr += relativeBase;
-                }
-                if (mode != 1 && (!write || idx != this.params)) {
-                    if (curr >= memory.length) {
-                        return new Ans((int) curr, false);
+    
+            LongOp(int params, BiConsumer<long[], long[]> op, boolean write) {
+                this(params, (p, arr) -> {
+                    op.accept(p, arr);
+                    return (int) p[0] + params + 1;
+                }, write);
+            }
+    
+            Ans apply(long[] memory, int i, int relativeBase) {
+                long[] params = new long[this.params + 1];
+                params[0] = i;
+                int code = (int) memory[i] / 100;
+                for (int idx = 1; idx <= this.params; idx++) {
+                    int mode = code % 10;
+                    long curr = memory[i + idx];
+                    if (mode == 2) {
+                        curr += relativeBase;
                     }
-                    curr = memory[(int) curr];
+                    if (mode != 1 && (!write || idx != this.params)) {
+                        if (curr >= memory.length) {
+                            return new Ans((int) curr, false);
+                        }
+                        curr = memory[(int) curr];
+                    }
+                    code /= 10;
+                    params[idx] = curr;
                 }
-                code /= 10;
-                params[idx] = curr;
+                if (write && params[this.params] >= memory.length) {
+                    return new Ans((int) params[this.params], false);
+                }
+                int res = op.applyAsInt(params, memory);
+                return new Ans(res, res < memory.length);
             }
-            if (write && params[this.params] >= memory.length) {
-                return new Ans((int) params[this.params], false);
-            }
-            int res = op.applyAsInt(params, memory);
-            return new Ans(res, res < memory.length);
+
+        public int params() {
+            return params;
         }
 
-    }
-
-
-    private record Ans(int idx, boolean success) {
-    }
-
-
-    public record Operation(int params, ToIntBiFunction<int[], int[]> op, OpType type) {
-
-        int apply(int[] array, int i, int relativeBase) {
-            int[] params = new int[this.params + 1];
-            params[0] = i;
-            int code = array[i] / 100;
-            for (int idx = 1; idx < params.length; idx++) {
-                int curr = array[i + idx];
-                int mode = code % 10;
-                if ((type != OpType.WRITE || idx != params.length - 1)) {
-                    curr = switch (mode) {
-                        case 0 -> array[curr];
-                        case 1 -> curr;
-                        case 2 -> array[curr + relativeBase];
-                        default -> throw new IllegalStateException();
-                    };
-                }
-                code /= 10;
-                params[idx] = curr;
-            }
-            return op.applyAsInt(array, params);
+        public ToIntBiFunction<long[], long[]> op() {
+            return op;
         }
 
-    }
+        public boolean write() {
+            return write;
+        }
+
+        @Override public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
+            var that = (LongOp) obj;
+            return this.params == that.params && Objects.equals(this.op, that.op)
+                    && this.write == that.write;
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(params, op, write);
+        }
+
+        @Override public String toString() {
+            return "LongOp[" + "params=" + params + ", " + "op=" + op + ", " + "write=" + write
+                    + ']';
+        }
+    
+    
+        }
+
+
+    private static final class Ans {
+        private final int idx;
+        private final boolean success;
+
+        private Ans(int idx, boolean success) {
+            this.idx = idx;
+            this.success = success;
+        }
+
+        public int idx() {
+            return idx;
+        }
+
+        public boolean success() {
+            return success;
+        }
+
+        @Override public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
+            var that = (Ans) obj;
+            return this.idx == that.idx && this.success == that.success;
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(idx, success);
+        }
+
+        @Override public String toString() {
+            return "Ans[" + "idx=" + idx + ", " + "success=" + success + ']';
+        }
+    
+        }
+
+
+    public static final class Operation {
+        private final int params;
+        private final ToIntBiFunction<int[], int[]> op;
+        private final OpType type;
+
+        public Operation(int params, ToIntBiFunction<int[], int[]> op, OpType type) {
+            this.params = params;
+            this.op = op;
+            this.type = type;
+        }
+    
+            int apply(int[] array, int i, int relativeBase) {
+                int[] params = new int[this.params + 1];
+                params[0] = i;
+                int code = array[i] / 100;
+                for (int idx = 1; idx < params.length; idx++) {
+                    int curr = array[i + idx];
+                    int mode = code % 10;
+                    if ((type != OpType.WRITE || idx != params.length - 1)) {
+                        curr = switch (mode) {
+                            case 0 -> array[curr];
+                            case 1 -> curr;
+                            case 2 -> array[curr + relativeBase];
+                            default -> throw new IllegalStateException();
+                        };
+                    }
+                    code /= 10;
+                    params[idx] = curr;
+                }
+                return op.applyAsInt(array, params);
+            }
+
+        public int params() {
+            return params;
+        }
+
+        public ToIntBiFunction<int[], int[]> op() {
+            return op;
+        }
+
+        public OpType type() {
+            return type;
+        }
+
+        @Override public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (obj == null || obj.getClass() != this.getClass())
+                return false;
+            var that = (Operation) obj;
+            return this.params == that.params && Objects.equals(this.op, that.op) && Objects.equals(
+                    this.type, that.type);
+        }
+
+        @Override public int hashCode() {
+            return Objects.hash(params, op, type);
+        }
+
+        @Override public String toString() {
+            return "Operation[" + "params=" + params + ", " + "op=" + op + ", " + "type=" + type
+                    + ']';
+        }
+    
+    
+        }
 }

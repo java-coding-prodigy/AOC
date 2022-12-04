@@ -1,4 +1,4 @@
-package AOC2021Practice;
+package aoc2020;
 
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
