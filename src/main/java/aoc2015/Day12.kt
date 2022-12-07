@@ -26,8 +26,4 @@ class Day12 : Day(12) {
         }
         return p1 to p2
     }
-
-    private fun findNumSum(json: String) =
-        "-?\\d+".toRegex().findAll(json).sumOf { it.value.toInt().also(::println) }
-
 }
