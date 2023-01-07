@@ -19,9 +19,10 @@ class Day16 : Day(16) {
         )
         val sues = input.map {
             getDetails(it.substringAfter(": "))
-        }.withIndex()
+        }
         return sues
-            .find { (i, sue) -> sue.all { (k, v) -> actualSue[k] == v } }?.index?.inc() to sues.find { (i, sue) ->
+            .indexOfFirst { sue -> sue.all { (k, v) -> actualSue[k] == v } }
+            .inc() to sues.indexOfFirst { sue ->
             sue.all { (k, v) ->
                 when (k) {
                     "cats", "trees" -> actualSue[k]!! < v
@@ -29,7 +30,7 @@ class Day16 : Day(16) {
                     else -> actualSue[k] == v
                 }
             }
-        }?.index?.inc()
+        }.inc()
     }
 
 

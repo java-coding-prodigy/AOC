@@ -1,5 +1,6 @@
 package aoc2022
 
+import java.time.Duration
 import scala.io.Source
 import scala.util.Using
 
@@ -12,7 +13,9 @@ abstract class Day(number: Int) {
   def part2(): Any
 
   def run(): Unit = {
-    println(s"Part 1: ${part1()}")
-    println(s"Part 2: ${part2()}")
+    val start1 = System.nanoTime()
+    println(s"Part 1: ${part1()}  Time: ${(System.nanoTime() - start1) / 1000000} ms")
+    val start2 = System.nanoTime()
+    println(s"Part 2: ${part2()}  Time: ${(System.nanoTime() - start2) / 1000000} ms")
   }
 }
