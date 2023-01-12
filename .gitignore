@@ -1,1 +1,2 @@
-AOC/target/**/*.*
+target/
+.idea/
