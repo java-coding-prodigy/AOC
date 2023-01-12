@@ -36,7 +36,7 @@ object Day22 extends Day(22) {
     for (move <- path) {
       move match {
         case 'R' => dir = floorMod(dir + 1, 4)
-        case 'L' => dir = floorMod(dir - 1, 4)
+        case 'L' => dir = floorMod(dir + 3, 4)
         case steps: Int =>
           breakable {
             for (_ <- 0 until steps) {
@@ -50,9 +50,9 @@ object Day22 extends Day(22) {
               if (grid.applyOrElse(y, _ => Array.emptyCharArray).applyOrElse(x, _ => ' ') == ' ') {
                 dir match {
                   case 0 => x = grid(y).indexWhere(ch => ch != ' ')
-                  case 1 => y = grid.map(_.applyOrElse(x, _ => ' ')).indexWhere(ch => ch != ' ')
-                  case 2 => x = grid(y).lastIndexWhere(ch => ch != ' ')
-                  case 3 => y = grid.map(_.applyOrElse(x, _ => ' ')).lastIndexWhere(ch => ch != ' ')
+                  case 1 => y = grid.indexWhere(row => row.length > x && row(x) != ' ')/*map(_.applyOrElse(x, _ => ' ')).indexWhere(ch => ch != ' ')*/
+                  case 2 => x = grid(y).length - 1/*.lastIndexWhere(ch => ch != ' ')*/
+                  case 3 => y = grid.lastIndexWhere(_.length > x)/*map(_.applyOrElse(x, _ => ' ')).lastIndexWhere(ch => ch != ' ')*/
                 }
               }
               println((x, y))
@@ -62,7 +62,6 @@ object Day22 extends Day(22) {
                 println("stopped")
                 break
               }
-
               /*grid(prevY)(prevX) = dir match {
                 case 0 => '>'
                 case 1 => 'v'
