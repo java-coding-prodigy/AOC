@@ -1,0 +1,67 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.36.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           AOC
+version:        0.1.0.0
+homepage:       https://github.com/java-coding-prodigy/AOC#readme
+bug-reports:    https://github.com/java-coding-prodigy/AOC/issues
+author:         java-coding-prodigy
+maintainer:     java-coding-prodigy@github.com
+copyright:      2023 java-coding-prodigy
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/java-coding-prodigy/AOC
+
+library
+  other-modules:
+      Paths_AOC
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.7
+    , regex-posix >=0.96.0.1
+    , text >=1.2.4.1
+  default-language: Haskell2010
+
+executable aoc-exe
+  main-is: Day.hs
+  other-modules:
+      Day1
+      Day2
+      Day3
+      Day4
+      Lib
+      Paths_AOC
+  hs-source-dirs:
+      src/main/java/aoc2023
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      AOC
+    , base >=4.7 && <5
+    , containers >=0.6.7
+    , regex-posix >=0.96.0.1
+    , text >=1.2.4.1
+  default-language: Haskell2010
+
+test-suite aoc-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_AOC
+  hs-source-dirs:
+      test
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      AOC
+    , base >=4.7 && <5
+    , containers >=0.6.7
+    , regex-posix >=0.96.0.1
+    , text >=1.2.4.1
+  default-language: Haskell2010

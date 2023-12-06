@@ -1,3 +1,5 @@
 target/
 .idea/
 AOC.iml
+.stack-work/
+*~
