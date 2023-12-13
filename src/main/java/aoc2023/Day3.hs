@@ -1,2 +1,7 @@
-module C:\Users\Abc\IdeaProjects\AOC\src\main\java\aoc2023.Day3 where
+module Day3(main) where
+import Lib
+import System.IO
 
+main = do
+        handle <- getInput 3
+        hClose handle

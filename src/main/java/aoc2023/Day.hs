@@ -1,2 +1,6 @@
-module C:\Users\Abc\IdeaProjects\AOC\src\main\java\aoc2023.Day where
+module Main where
+import Day8(main)
+
+
+main = Day8.main
 

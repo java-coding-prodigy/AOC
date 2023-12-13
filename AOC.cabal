@@ -27,6 +27,7 @@ library
       base >=4.7 && <5
     , containers >=0.6.7
     , regex-posix >=0.96.0.1
+    , split >=0.1.2.3
     , text >=1.2.4.1
   default-language: Haskell2010
 
@@ -37,6 +38,10 @@ executable aoc-exe
       Day2
       Day3
       Day4
+      Day5
+      Day6
+      Day7
+      Day8
       Lib
       Paths_AOC
   hs-source-dirs:
@@ -47,6 +52,7 @@ executable aoc-exe
     , base >=4.7 && <5
     , containers >=0.6.7
     , regex-posix >=0.96.0.1
+    , split >=0.1.2.3
     , text >=1.2.4.1
   default-language: Haskell2010
 
@@ -63,5 +69,6 @@ test-suite aoc-test
     , base >=4.7 && <5
     , containers >=0.6.7
     , regex-posix >=0.96.0.1
+    , split >=0.1.2.3
     , text >=1.2.4.1
   default-language: Haskell2010
